@@ -14,8 +14,10 @@ Scans Solana blockchain for "dead" memecoins showing signs of life (volume spike
    ```
    Edit `.env`:
    ```
-   TELEGRAM_BOT_TOKEN=your_telegram_token
-   TELEGRAM_CHAT_ID=your_chat_id
+TELEGRAM_BOT_TOKEN=your_telegram_token
+TELEGRAM_CHAT_ID=your_chat_id
+# Operational mode for filters
+FILTER_MODE=Balanced
    ```
 
 3. **Install & Run:**
@@ -26,13 +28,15 @@ Scans Solana blockchain for "dead" memecoins showing signs of life (volume spike
 
 ## Filters
 
-| Filter | Value |
-|--------|-------|
-| Min Age | 7 days |
-| Market Cap | $10k - $200k |
-| Liquidity | >= $10k |
-| Volume Spike | > $5k (5min) |
-| RugCheck Score | < 500 |
+| Filter | Balanced (Mode: Balanced) |
+|--------|---------------------------|
+| Min Age | 3 days |
+| Market Cap | $5k - $500k |
+| Liquidity | >= $5k |
+| Volume Spike | > $2k (15m) |
+| RugCheck Score | < 800 |
+
+Notes: You can switch modes with FILTER_MODE in the environment. Current default is Balanced.
 
 ## API Sources
 

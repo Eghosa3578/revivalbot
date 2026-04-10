@@ -3,6 +3,7 @@ import signal
 import sys
 from datetime import datetime
 from scanner import create_scanner
+from config import FILTER_MODE, MIN_AGE_DAYS, MIN_MARKET_CAP, MAX_MARKET_CAP, MIN_LIQUIDITY, MIN_VOLUME_SPIKE, MAX_RUGCHECK_SCORE
 from telegram_bot import get_telegram_bot
 from config import SCAN_INTERVAL
 
@@ -13,6 +14,7 @@ class ReversalBot:
         self.telegram = get_telegram_bot()
         self.running = True
         self.scan_count = 0
+        print(f"[MODE] Active filter mode: {FILTER_MODE} (MIN_AGE_DAYS={MIN_AGE_DAYS}, MIN_MARKET_CAP={MIN_MARKET_CAP}, MAX_MARKET_CAP={MAX_MARKET_CAP}, MIN_LIQUIDITY={MIN_LIQUIDITY}, MIN_VOLUME_SPIKE={MIN_VOLUME_SPIKE}, MAX_RUGCHECK_SCORE={MAX_RUGCHECK_SCORE})")
         
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
