@@ -2,6 +2,11 @@ import asyncio
 import telegram
 from typing import Optional
 from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+from datetime import datetime
+from urllib.parse import quote_plus
+"""Note: keep imports minimal; we format messages using HTML for Telegram.
+"""
+from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 
 
 class TelegramBot:
@@ -28,29 +33,29 @@ class TelegramBot:
         address = token_data.get("address", "")
         age_days = token_data.get("age_days", 0)
         market_cap = token_data.get("market_cap", 0)
-        volume_15m = token_data.get("volume_15m", 0)
+        volume_1h = token_data.get("volume_1h", 0)
+        volume_24h = token_data.get("volume_24h", 0)
         liquidity = token_data.get("liquidity", 0)
         price_drop_pct = token_data.get("price_drop_pct", 0)
         rug_score = token_data.get("rug_score", 0)
         rug_check_url = f"https://rugcheck.xyz/tokens/{address}"
         dex_url = f"https://dexscreener.com/solana/{address}"
-        photon_url = f"https://photon.toolzilla.io/?input=solana&tokenAddress={address}"
-
-        message = f"""🚨 <b>REVERSAL GEM DETECTED!</b> 🚨
+        # Address is shown in code block for easy copying in UI
+        message = f"""🚨 <b>NEW GEM DETECTED!</b> 🚨
 
 🪙 <b>Token:</b> {name} ({symbol})
+🔗 <b>CA:</b> <code>{address}</code>
 ⏳ <b>Age:</b> {age_days} Days Old
-💰 <b>Market Cap:</b> ${market_cap:,.0f} (Dropped {price_drop_pct:.0f}% from ATH!)
+💰 <b>Market Cap:</b> ${market_cap:,.0f}
 
-📈 <b>THE PULSE:</b>
-🔊 Volume (Last 15m): <b>${volume_15m:,.0f}</b> 🟢 WAKING UP!
+📊 <b>THE PULSE:</b>
+🔊 Volume (1h): <b>${volume_1h:,.0f}</b> | <b>Vol 24h:</b> <b>${volume_24h:,.0f}</b>
 💧 Liquidity: ${liquidity:,.0f}
 
-🛡️ <b>Safety Check:</b>
-🔎 RugCheck Score: <b>{rug_score}</b> {'✅ SAFE' if rug_score < 500 else '⚠️ CAUTION'}
+🛡️ <b>Safety:</b>
+🔎 RugCheck Score: <b>{rug_score}</b>
 
-🔗 <a href="{dex_url}">DexScreener Chart</a> | <a href="{photon_url}">Photon Trading</a>
-🔗 <a href="{rug_check_url}">RugCheck Report</a>
+🔗 <a href="{dex_url}">DexScreener Chart</a> | <a href="{rug_check_url}">RugCheck Report</a>
 
 <i>Reversal Bot - Scanning for dead coins with pulse...</i>"""
 

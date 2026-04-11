@@ -49,4 +49,6 @@ MIN_VOLUME_SPIKE = TH["MIN_VOLUME_SPIKE"]
 MAX_RUGCHECK_SCORE = TH["MAX_RUGCHECK_SCORE"]
 
 DEXSCREENER_BASE_URL = "https://api.dexscreener.com"
+ENABLE_TOKEN_BOOSTS = os.getenv("ENABLE_TOKEN_BOOSTS", "false").lower() in ("true","1","yes","y")
+BOOST_COOLDOWN_SEC = int(os.getenv("BOOST_COOLDOWN_SEC", "300"))
 SCAN_INTERVAL = int(os.getenv("SCAN_INTERVAL", "60"))

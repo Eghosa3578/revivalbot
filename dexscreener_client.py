@@ -1,12 +1,17 @@
 import httpx
+import time
+import httpx
 from typing import Optional
-from config import DEXSCREENER_BASE_URL
+from config import DEXSCREENER_BASE_URL, ENABLE_TOKEN_BOOSTS, BOOST_COOLDOWN_SEC
+from config import SCAN_INTERVAL
 
 
 class DexScreenerClient:
     def __init__(self):
         self.base_url = DEXSCREENER_BASE_URL
         self.client = httpx.Client(timeout=30.0)
+        self.boosts_enabled = ENABLE_TOKEN_BOOSTS
+        self._boost_off_until = 0
 
     def _request(self, endpoint: str) -> Optional[dict]:
         url = f"{self.base_url}{endpoint}"
@@ -16,6 +21,9 @@ class DexScreenerClient:
             return response.json()
         except Exception as e:
             print(f"DexScreener API error: {e}")
+            # If rate limited, back off boosts as a side effect
+            if isinstance(e, httpx.HTTPStatusError) and e.response is not None and e.response.status_code == 429:
+                self._boost_off_until = int(time.time()) + BOOST_COOLDOWN_SEC
             return None
 
     def get_token_pairs(self, chain: str, token_address: str) -> list:
@@ -25,9 +33,16 @@ class DexScreenerClient:
         return []
 
     def get_boosted_tokens(self) -> list:
+        import time
+        if not self.boosts_enabled:
+            return []
+        if int(time.time()) < self._boost_off_until:
+            return []
         data = self._request("/token-boosts/latest/v1")
         if data and isinstance(data, list):
             return data
+        # If anything goes wrong, back off boosts for a cooldown
+        self._boost_off_until = int(time.time()) + BOOST_COOLDOWN_SEC
         return []
 
     def get_community_takeovers(self) -> list:
